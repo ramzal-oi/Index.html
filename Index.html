@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amplop emas · untuk kamu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f7efe2;  /* warna kertas tua */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+            padding: 1.5rem;
+            transition: background 0.5s ease;
+        }
+
+        /* amplop container */
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:active {
+            transform: scale(0.99);
+        }
+
+        /* amplop visual */
+        .envelope {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            aspect-ratio: 1.6 / 1;
+            background: linear-gradient(145deg, #b47c5e, #8b5a3c, #c69a6d);
+            border-radius: 12px 12px 8px 8px;
+            box-shadow: 0 25px 35px -10px rgba(70, 40, 20, 0.4), 0 0 0 2px #e9d19b inset, 0 0 0 5px #ba8b5a inset;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 20px;
+            border: 1px solid #f3d59b;
+        }
+
+        /* lipatan amplop (segitiga bawah) */
+        .envelope-flap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #9b6e4b, #be8f66);
+            clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 -8px 12px rgba(0,0,0,0.1) inset;
+            transition: all 0.6s ease;
+            z-index: 5;
+            border-top: 2px solid #efd19e;
+        }
+
+        /* segitiga atas (tutup amplop) */
+        .envelope-lid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background: linear-gradient(145deg, #cba87e, #a36f4b);
+            clip-path: polygon(0% 0%, 50% 70%, 100% 0%);
+            border-radius: 8px 8px 40px 40px;
+            box-shadow: 0 12px 15px -8px #422f1f inset;
+            transition: all 0.5s 0.1s ease;
+            z-index: 10;
+            border-bottom: 2px solid #fadcad;
+            transform-origin: top;
+        }
+
+        /* ornamen emas di amplop */
+        .gold-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle at 30% 30%, #f9e7b3, #dbb063, #a47e4c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3), 0 0 0 3px #f7e3b1, 0 0 0 6px #b3894f;
+            z-index: 20;
+            font-size: 2.2rem;
+            color: #4d2f16;
+            text-shadow: 1px 1px 0 #ffecb3;
+            transition: all 0.4s ease;
+            border: 1px solid #ffd78c;
+        }
+
+        .gold-stamp span {
+            transform: rotate(-8deg);
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* teks di dalam amplop (tersembunyi) */
+        .letter-inside {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 88%;
+            max-width: 540px;
+            background: rgba(255, 250, 240, 0.97);
+            backdrop-filter: blur(4px);
+            border-radius: 24px 24px 24px 8px;
+            padding: 1.8rem 2.2rem;
+            box-shadow: 0 20px 30px -5px rgba(60, 40, 20, 0.5), 0 0 0 2px #f7e1b1, 0 0 0 5px #cfa776;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s 0.2s ease;
+            z-index: 30;
+            border: 1px solid #f7dbb5;
+            max-height: 80vh;
+            overflow-y: auto;
+            pointer-events: none;
+        }
+
+        .letter-content {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: #382a1e;
+            font-family: 'Cormorant Garamond', 'Garamond', serif;
+            text-align: left;
+        }
+
+        .letter-content p {
+            margin-bottom: 1.2rem;
+        }
+
+        .letter-content p:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #9f5d3a;
+            border-top: 1px dashed #dbb894;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .for-you-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(120deg, #b0724a, #a15733, #c1835c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            border-bottom: 2px solid #e5bc8b;
+            padding-right: 20px;
+            font-style: italic;
+        }
+
+        .sub-name {
+            font-size: 1.2rem;
+            color: #aa7a62;
+            margin-left: 10px;
+            -webkit-text-fill-color: #aa7a62;
+        }
+
+        /* keadaan terbuka */
+        .envelope-wrapper.open .envelope-lid {
+            transform: rotateX(180deg);
+            clip-path: polygon(0% 0%, 50% 70%, 100% 0%);
+            box-shadow: 0 -10px 15px -5px #2f1f12 inset;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        .envelope-wrapper.open .envelope-flap {
+            opacity: 0.5;
+            transform: scaleY(0.9);
+            filter: brightness(1.2);
+        }
+
+        .envelope-wrapper.open .letter-inside {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -55%);
+            pointer-events: auto;
+        }
+
+        .envelope-wrapper.open .gold-stamp {
+            transform: translate(-50%, -80%) scale(0.8);
+            opacity: 0.7;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 2px #f1ca89;
+        }
+
+        .envelope-wrapper.open .envelope {
+            box-shadow: 0 20px 30px -5px #4d311b;
+        }
+
+        /* petunjuk klik */
+        .click-hint {
+            color: #7a5b41;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            background: rgba(255, 235, 210, 0.7);
+            padding: 0.6rem 1.8rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            border: 1px solid #dbb282;
+            box-shadow: 0 5px 10px rgba(100, 60, 30, 0.15);
+            margin-top: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            transition: 0.3s;
+            border: 1px solid #efc998;
+        }
+
+        .click-hint:hover {
+            background: #ffe8cf;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 500px) {
+            .letter-inside {
+                padding: 1.2rem;
+                width: 95%;
+            }
+            .for-you-title {
+                font-size: 1.8rem;
+            }
+            .gold-stamp {
+                width: 70px;
+                height: 70px;
+                font-size: 1.5rem;
+            }
+        }
+
+        /* scroll cantik di dalam surat */
+        .letter-inside::-webkit-scrollbar {
+            width: 6px;
+        }
+        .letter-inside::-webkit-scrollbar-track {
+            background: #f7e7d4;
+            border-radius: 10px;
+        }
+        .letter-inside::-webkit-scrollbar-thumb {
+            background: #c7a16b;
+            border-radius: 10px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="toggleEnvelope()">
+        <!-- amplop coklat gradasi emas -->
+        <div class="envelope">
+            <div class="envelope-lid"></div>
+            <div class="envelope-flap"></div>
+            <div class="gold-stamp">
+                <span>✧</span>
+            </div>
+
+            <!-- surat di dalam amplop (muncul setelah klik) -->
+            <div class="letter-inside" id="letterInside">
+                <div style="display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px;">
+                    <span class="for-you-title">for you from me</span>
+                    <span class="sub-name">(ramzal)</span>
+                </div>
+
+                <div class="letter-content">
+                    <p>Kamu adalah sosok yang selalu berhasil membuat dunia terasa lebih hangat hanya dengan kehadiranmu. Kamu punya cara tersenyum yang sederhana namun mampu menenangkan hati yang paling gelisah, seolah setiap lekuk di wajahmu menyimpan cahaya yang tak pernah redup. Kamu bukan hanya cantik dari luar, tetapi juga memiliki hati yang begitu lembut, penuh empati, dan tulus dalam memperlakukan orang lain. Cara kamu berbicara selalu terdengar lembut namun penuh makna, membuat siapa pun merasa dihargai dan didengarkan.</p>
+
+                    <p>Kamu punya keteguhan dalam menghadapi masalah, kekuatan yang mungkin tidak semua orang lihat, tetapi begitu terasa bagi mereka yang mengenalmu lebih dekat. Kamu adalah perpaduan antara kecerdasan dan keanggunan, antara keberanian dan kelembutan. Kamu selalu berusaha menjadi versi terbaik dari dirimu tanpa menjatuhkan orang lain, dan itu adalah hal yang sangat langka. Kamu mampu membuat hari yang biasa menjadi istimewa hanya dengan pesan singkat atau tawa kecilmu. Kamu punya mimpi yang besar dan semangat yang tak mudah padam, dan itu membuatmu semakin bersinar.</p>
+
+                    <p>Kamu adalah alasan mengapa harapan terasa nyata dan mengapa senyuman terasa lebih berarti. Setiap detail tentang kamu, dari caramu berpikir hingga caramu peduli, adalah anugerah yang patut disyukuri. Kamu membuat dunia terasa lebih indah, lebih hidup, dan lebih penuh warna. Dan dengan segala rasa yang tumbuh karena kekagumanku pada kamu, izinkan aku bertanya dengan tulus dari hati yang paling dalam, maukah kamu menjadi pacarku?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- petunjuk klik -->
+        <div class="click-hint" id="clickHint">✨ sentuh amplopnya ✨</div>
+    </div>
+
+    <script>
+        function toggleEnvelope() {
+            const wrapper = document.getElementById('envelopeWrapper');
+            const hint = document.getElementById('clickHint');
+            
+            wrapper.classList.toggle('open');
+            
+            if (wrapper.classList.contains('open')) {
+                hint.textContent = '💌 surat untukmu 💌';
+                hint.style.background = '#fbe9d2';
+            } else {
+                hint.textContent = '✨ sentuh amplopnya ✨';
+                hint.style.background = 'rgba(255, 235, 210, 0.7)';
+            }
+        }
+
+        // biar bisa di-trigger juga dengan keyboard atau aksesibilitas (enter)
+        document.getElementById('envelopeWrapper').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleEnvelope();
+            }
+        });
+
+        // tambahkan role agar bisa di-fokus
+        document.getElementById('envelopeWrapper').setAttribute('tabindex', '0');
+        document.getElementById('envelopeWrapper').setAttribute('role', 'button');
+        document.getElementById('envelopeWrapper').setAttribute('aria-label', 'Buka amplop');
+    </script>
+</body>
+</html>
